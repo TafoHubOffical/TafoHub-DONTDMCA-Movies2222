@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tafo Movies</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000814;color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+/* Wave canvas sits behind everything */
+#waveCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* Scanlines */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);
+  pointer-events:none;z-index:2;
+}
+
+nav{
+  position:fixed;top:0;width:100%;z-index:1000;
+  padding:0 5%;height:62px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom,rgba(0,5,18,0.96),transparent);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:'Bebas Neue';font-size:24px;letter-spacing:5px;color:#fff;
+  text-decoration:none;
+}
+.logo-icon{flex-shrink:0}
+.logo-text span{color:rgba(120,170,255,0.85)}
+
+#searchBox{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.13);
+  color:#fff;padding:7px 16px;border-radius:20px;width:160px;outline:none;transition:.2s;
+}
+#searchBox:focus{border-color:rgba(100,160,255,0.5);background:rgba(255,255,255,0.1)}
+
+#genreBar{
+  position:sticky;top:62px;z-index:900;
+  padding:10px 5%;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
+  background:rgba(0,6,20,0.75);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.gBtn{
+  background:transparent;border:1px solid rgba(255,255,255,0.15);
+  color:rgba(255,255,255,0.55);padding:5px 16px;border-radius:20px;
+  font-size:11px;cursor:pointer;transition:.2s;white-space:nowrap;letter-spacing:.5px;
+}
+.gBtn:hover{border-color:rgba(255,255,255,0.45);color:#fff}
+.gBtn.active{background:rgba(255,255,255,0.95);color:#000;border-color:transparent;font-weight:700}
+
+#featured{
+  position:relative;height:400px;
+  display:flex;align-items:flex-end;
+  padding:0 5% 36px;overflow:hidden;z-index:10;pointer-events:none;
+}
+#featBg{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center top;
+  transition:opacity .9s ease;z-index:-1;transform:scale(1.04);
+}
+#featBg.fade{opacity:0}
+#featBg::after{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(to right,rgba(0,5,20,0.98) 0%,rgba(0,5,20,0.65) 40%,transparent 75%),
+    linear-gradient(to top,rgba(0,5,20,1) 0%,rgba(0,5,20,0.4) 35%,transparent 65%);
+}
+#featContent{pointer-events:auto;position:relative;z-index:2}
+#featTitle{
+  font-family:'Bebas Neue';font-size:50px;letter-spacing:3px;
+  text-shadow:0 0 40px rgba(0,60,180,0.45),0 2px 10px rgba(0,0,0,0.95);
+  margin-bottom:14px;line-height:1;
+}
+.watchBtn{
+  background:linear-gradient(135deg,#fff,#c8dcff);
+  border:none;padding:11px 28px;font-weight:700;cursor:pointer;
+  border-radius:4px;letter-spacing:1.5px;font-size:12px;color:#000;
+  box-shadow:0 0 20px rgba(100,160,255,0.25);transition:.2s;
+}
+.watchBtn:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(100,160,255,0.45)}
+
+.section{padding:28px 5%;z-index:20;position:relative}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:16px}
+
+.card{
+  border-radius:10px;border:1px solid rgba(255,255,255,0.08);
+  cursor:pointer;position:relative;overflow:hidden;
+  background:#04091a;
+  transition:all .35s cubic-bezier(.17,.88,.32,1.2);
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(80,140,255,0.14),transparent 60%);
+  opacity:0;transition:.3s;z-index:1;pointer-events:none;
+}
+.card:hover{
+  transform:scale(1.05) translateY(-6px);
+  border-color:rgba(100,160,255,0.5);
+  box-shadow:0 0 0 1px rgba(100,160,255,0.25),0 20px 40px rgba(0,0,0,0.8),0 0 30px rgba(0,50,200,0.2);
+}
+.card:hover::before{opacity:1}
+.img-container{overflow:hidden;background:#000}
+.card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;transition:.5s ease}
+.card:hover img{transform:scale(1.07);filter:brightness(1.08)}
+.cardOverlay{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,5,20,0.97),rgba(0,5,20,0.5) 55%,transparent);
+  padding:30px 10px 10px;opacity:0;transition:.3s;z-index:2;
+}
+.card:hover .cardOverlay{opacity:1}
+.cardTitle{font-size:11px;font-weight:700;letter-spacing:.5px;line-height:1.3}
+</style>
+</head>
+<body>
+
+<canvas id="waveCanvas"></canvas>
+
+<nav>
+  <div class="logo">
+    <!-- Film reel SVG — standalone, no clip-path conflicts -->
+    <svg class="logo-icon" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="14.5" stroke="rgba(180,210,255,0.9)" stroke-width="1.6"/>
+      <circle cx="16" cy="16" r="4.5" stroke="rgba(180,210,255,0.9)" stroke-width="1.4"/>
+      <!-- 8 spokes -->
+      <line x1="16" y1="11.5" x2="16" y2="4.5" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="16" y1="20.5" x2="16" y2="27.5" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="11.5" y1="16" x2="4.5" y2="16" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="20.5" y1="16" x2="27.5" y2="16" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="12.8" y1="12.8" x2="7.8" y2="7.8" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="19.2" y1="19.2" x2="24.2" y2="24.2" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="19.2" y1="12.8" x2="24.2" y2="7.8" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="12.8" y1="19.2" x2="7.8" y2="24.2" stroke="rgba(180,210,255,0.9)" stroke-width="1.3" stroke-linecap="round"/>
+      <!-- 4 sprocket holes -->
+      <circle cx="16" cy="2.5" r="1.3" fill="rgba(180,210,255,0.9)"/>
+      <circle cx="16" cy="29.5" r="1.3" fill="rgba(180,210,255,0.9)"/>
+      <circle cx="2.5" cy="16" r="1.3" fill="rgba(180,210,255,0.9)"/>
+      <circle cx="29.5" cy="16" r="1.3" fill="rgba(180,210,255,0.9)"/>
+    </svg>
+    <div class="logo-text">TAFO <span>MOVIES</span></div>
+  </div>
+  <input type="text" id="searchBox" placeholder="Search..." oninput="handleSearch()">
+</nav>
+
+<div id="genreBar"></div>
+
+<div id="featured">
+  <div id="featBg"></div>
+  <div id="featContent">
+    <h1 id="featTitle"></h1>
+    <button class="watchBtn" onclick="playFeatured()">WATCH NOW</button>
+  </div>
+</div>
+
+<div id="mainContent"></div>
+
+<script>
+/* ── Animated Wave Background ── */
+(function(){
+  const c=document.getElementById('waveCanvas');
+  const ctx=c.getContext('2d');
+  let W,H,t=0;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+
+  const waves=[
+    {amp:60, freq:0.0018, speed:0.0006, y:0.55, alpha:0.06, width:3},
+    {amp:40, freq:0.0025, speed:0.0009, y:0.62, alpha:0.05, width:2},
+    {amp:80, freq:0.0012, speed:0.0004, y:0.70, alpha:0.04, width:2},
+    {amp:30, freq:0.003,  speed:0.0012, y:0.48, alpha:0.04, width:1.5},
+    {amp:55, freq:0.0015, speed:0.0007, y:0.78, alpha:0.035,width:1.5},
+  ];
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Deep base gradient
+    const bg=ctx.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0,'#000814');
+    bg.addColorStop(0.4,'#001030');
+    bg.addColorStop(1,'#000510');
+    ctx.fillStyle=bg;
+    ctx.fillRect(0,0,W,H);
+
+    // Radial glow center
+    const rg=ctx.createRadialGradient(W*0.5,H*0.3,0,W*0.5,H*0.3,W*0.6);
+    rg.addColorStop(0,'rgba(0,40,120,0.35)');
+    rg.addColorStop(1,'transparent');
+    ctx.fillStyle=rg;
+    ctx.fillRect(0,0,W,H);
+
+    // Waves
+    waves.forEach(w=>{
+      ctx.beginPath();
+      const baseY=H*w.y;
+      ctx.moveTo(0,baseY);
+      for(let x=0;x<=W;x+=3){
+        const y=baseY+Math.sin(x*w.freq+t*w.speed*10000)*w.amp
+                     +Math.sin(x*w.freq*1.7+t*w.speed*7000)*w.amp*0.4;
+        ctx.lineTo(x,y);
+      }
+      ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+      const grad=ctx.createLinearGradient(0,baseY-w.amp,0,baseY+w.amp);
+      grad.addColorStop(0,`rgba(0,80,200,${w.alpha})`);
+      grad.addColorStop(1,'transparent');
+      ctx.fillStyle=grad;
+      ctx.fill();
+
+      // Glowing top edge
+      ctx.beginPath();
+      ctx.moveTo(0,baseY);
+      for(let x=0;x<=W;x+=3){
+        const y=baseY+Math.sin(x*w.freq+t*w.speed*10000)*w.amp
+                     +Math.sin(x*w.freq*1.7+t*w.speed*7000)*w.amp*0.4;
+        ctx.lineTo(x,y);
+      }
+      ctx.strokeStyle=`rgba(60,140,255,${w.alpha*2.5})`;
+      ctx.lineWidth=w.width;
+      ctx.stroke();
+    });
+
+    t+=16;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── App ── */
+const movies=[
+  {title:"Terrifier 2",fileId:"1_Jjo7rOcCkYt3UryVkV2XvTfrL4QvHTE",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Terrifier%202.jpeg",genre:"Horror"},
+  {title:"Terrifier",fileId:"1_pQ3kbz_a8l3B7SKfdP9dYQwKax0WHUD",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Terrifier.jpg",genre:"Horror"},
+  {title:"Spider-Man: No Way Home",fileId:"1mUF4PcT0_ZKofV0KHHdjxgTQdhF2BliQ",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Spider%20Man%20No%20Way%20Home.jpg",genre:"Action"},
+  {title:"Hoppers",fileId:"13W8mK9e3QfBYGrzzBt8_qg5HI-EREG37",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Hoppers.jpg",genre:"Animation"},
+  {title:"Goat",fileId:"10FpMLZo0zSg-dwcBZVn6QDpZjeuqHthC",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/873637373737377/refs/heads/main/Goat%20Movie.jpg",genre:"Action"},
+  {title:"Scream 7",fileId:"1OzXqgxaS5f0cgR33PZDIwi4FfIbhFvMc",thumbId:"11iwQ72QHTeB0YQO2N3wH4AcXcae4aFUU",genre:"Horror"},
+  {title:"Five Nights At Freddy's 2",fileId:"1BmS75cTOmPFXkwv40WgJnoAaMbeo546v",thumbId:"18ir-YH8ODiU1aHw7yWSK4yvbjHHsDs90",genre:"Horror"},
+  {title:"The King Of Kings",fileId:"1hFANffuc5AMPYA3Q1Cp8N4ZkP5D7M8tN",thumbId:"1KW882c4oVBRB-nmT-irenHBglDEIlWGY",genre:"Drama"},
+  {title:"Predator Badlands",fileId:"1McJIylATyVjGaoMA6Fzu2aMrm3IL3MTp",thumbId:"1svD3nv-KWg2jI9HrdIC3p2QnuNTx0tMx",genre:"Action"},
+  {title:"Zootopia 2",fileId:"1GhDREN9in7ZkoRNOXQCTvwsZYjxDjtwl",thumbId:"1hNnO-kw9OjOLmWkPh1C3Husl3sRKJ-YH",genre:"Animation"},
+  {title:"Final Destination Bloodlines",fileId:"17JipNDL07Jb1ddmGow7MmsynCT77MmhI",thumbId:"1M2yCQzMb3VbCDVfP7TppG58fI1nTSR6C",genre:"Horror"},
+  {title:"Avatar Fire and Ash",fileId:"1uiIBHk5xdpysNXR09iSy6woGUqpFe4uF",thumbId:"1_dvp1zX0YN7KZsGo8sPJJZK2xNLH-kJT",genre:"Sci-Fi"},
+  {title:"The SpongeBob Movie",fileId:"1QCfesoM4uweiz1azvvgDAdHwVNU3duzF",thumbId:"1ow4eXnTJm8FZRylwwetjaXfPcX4Tjm2z",genre:"Animation"},
+  {title:"A Minecraft Movie",fileId:"1BLKqInNh03tNScTrvtR14r3nFk5bhR7f",thumbId:"1yxNaS2Omfj0UTvsUfLHy6vuS3zVcKdV3",genre:"Animation"},
+  {title:"Jurassic World Rebirth",fileId:"1XoKZI3uQSKBceTDceJNc9ei1Qg5mTAAR",thumbId:"1kwO4fgmhTdy94v0qGt4LSnpVxRx4Zq-j",genre:"Action"},
+  {title:"Venom The Last Dance",fileId:"1ZdhRDJac7D5Q9CXHYdPo_uoQU9aM7Mci",thumbId:"1yAkIvhOUL3ykjCzwn6LsEXW_3Ffg1zbj",genre:"Action"},
+  {title:"Free Guy",fileId:"1hX1_ZAHWd3RN_rd3-_cbyyxDdbkHRWhX",thumbId:"1safiTQrxrHKEyUNuL8kaxa4D0y3pmmTo",genre:"Comedy"},
+  {title:"Demon Slayer",fileId:"1dcai7qLs1IZOcrdQolWdtfsXtXRtnYDM",thumbId:"1M7FcUQG7wzDboYsjxmCII88jXY47MfTA",genre:"Anime"},
+  {title:"The Maze Runner",fileId:"1dIooALZfs2ikuPyR3hIuyp-qQqB4Wlhz",thumbId:"1HT2cg6GingEYFhp_lCgVeZ-zLJaIGl4J",genre:"Sci-Fi"},
+  {title:"Scorch Trials",fileId:"17u-qz9Kgf5w-1c6neoLGRgbiR2wzVIzL",thumbId:"1lABI8dJkMiBo45kF8-LbKxWznjW5Zz96",genre:"Sci-Fi"},
+  {title:"Death Cure",fileId:"1vlDHAn12emUejVX6D1HV_imiNFczhhQ5",thumbId:"1iN1-rFiO-HHaM_Jw0AL1U92BU5oKgP05",genre:"Sci-Fi"},
+  {title:"FNAF 1",fileId:"19kb8uiVb01NA2ZsTq4-KgsLp1Z5MalI1",thumbId:"116AGGj_wc6hUZQIbwU6mbx4gm_BWY-Pd",genre:"Horror"},
+  {title:"Ratatouille",fileId:"1-4M0OT7lpvxc4BdoFp9rEcBiV6zXL_Gl",thumbId:"1iKyBbH_g2dXGM9MJmLMZEO2yTNoaRMzh",genre:"Animation"},
+  {title:"Coco",fileId:"194M4dGCwh1hTxVM1-_axnLSdt4trnbK2",thumbId:"160bAd_MaRy7uO5ey3Z9mM96z351pX92m",genre:"Animation"}
+];
+
+let activeGenre="All",searchTerm="",featIdx=0;
+const cycleMovies=movies.slice(0,10);
+
+function updateFeat(){
+  const bg=document.getElementById('featBg'),m=cycleMovies[featIdx];
+  const img=m.thumbUrl||`https://drive.google.com/thumbnail?id=${m.thumbId}&sz=w1000`;
+  bg.classList.add('fade');
+  setTimeout(()=>{
+    bg.style.backgroundImage=`url('${img}')`;
+    document.getElementById('featTitle').textContent=m.title;
+    bg.classList.remove('fade');
+  },500);
+  featIdx=(featIdx+1)%cycleMovies.length;
+}
+setInterval(updateFeat,4000);
+
+function playFeatured(){
+  const t=document.getElementById('featTitle').textContent,m=movies.find(x=>x.title===t);
+  openMovie(m.title,m.fileId);
+}
+
+function buildG(){
+  const g=["All",...new Set(movies.map(m=>m.genre))];
+  document.getElementById('genreBar').innerHTML=g.map(x=>`<button class="gBtn ${x===activeGenre?'active':''}" onclick="activeGenre='${x}';buildG();render()">${x}</button>`).join('');
+}
+
+function render(){
+  const filtered=movies.filter(m=>(activeGenre==="All"||m.genre===activeGenre)&&m.title.toLowerCase().includes(searchTerm));
+  document.getElementById('mainContent').innerHTML=`<div class="section"><div class="grid">${filtered.map(m=>{
+    const img=m.thumbUrl||`https://drive.google.com/thumbnail?id=${m.thumbId}&sz=w400`;
+    return `<div class="card" onclick="openMovie('${m.title.replace(/'/g,"\\'")}','${m.fileId}')">
+      <div class="img-container"><img src="${img}" loading="lazy"></div>
+      <div class="cardOverlay"><div class="cardTitle">${m.title}</div></div>
+    </div>`;
+  }).join('')}</div></div>`;
+}
+
+function openMovie(t,id){
+  const w=window.open("about:blank","_blank");
+  w.document.write(`<body style="margin:0;background:#000"><iframe src="https://drive.google.com/file/d/${id}/preview" style="width:100%;height:100%;border:none" allowfullscreen></iframe></body>`);
+}
+
+function handleSearch(){searchTerm=document.getElementById('searchBox').value.toLowerCase();render()}
+
+updateFeat();buildG();render();
+</script>
+</body>
+</html>
