@@ -76,7 +76,6 @@ nav{
 .section{padding:28px 5%;z-index:20;position:relative}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:25px}
 
-/* CARDS WITH PERMANENT TITLES */
 .card{
   cursor:pointer;position:relative;
   transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -95,7 +94,6 @@ nav{
   display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 
-/* VIDEO OVERLAY SYSTEM */
 #videoOverlay{
   position:fixed;inset:0;background:#000;z-index:2000;
   display:none;flex-direction:column;
@@ -112,7 +110,6 @@ nav{
 #closePlayer:hover{background:rgba(255,0,0,0.6);transform:rotate(90deg)}
 
 iframe{width:100%;height:100%;border:none;}
-
 </style>
 </head>
 <body>
@@ -142,7 +139,6 @@ iframe{width:100%;height:100%;border:none;}
 </div>
 
 <script>
-/* Animated Wave Background */
 (function(){
   const c=document.getElementById('waveCanvas');
   const ctx=c.getContext('2d');
@@ -173,17 +169,19 @@ iframe{width:100%;height:100%;border:none;}
 })();
 
 const movies=[
+  {title:"The Legend Of Aang: The Last Airbender",fileId:"1GLkdpNumWIYJ8rw6kUJgf5NiDLsaUDLU",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/The%20Legend%20Of%20Aang%3A%20The%20Last%20Airbender.jpg",genre:"Action"},
   {title:"The Super Mario Galaxy Movie",fileId:"1wThJWyfKo3rKu0iZ3orn8XryPMfYeL5K",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/The%20Super%20Mario%20Galaxy%20Movie.jpeg",genre:"Animation"},
   {title:"Terrifier 2",fileId:"1_Jjo7rOcCkYt3UryVkV2XvTfrL4QvHTE",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Terrifier%202.jpeg",genre:"Horror"},
   {title:"Terrifier",fileId:"1_pQ3kbz_a8l3B7SKfdP9dYQwKax0WHUD",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Terrifier.jpg",genre:"Horror"},
   {title:"Spider-Man: No Way Home",fileId:"1mUF4PcT0_ZKofV0KHHdjxgTQdhF2BliQ",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Spider%20Man%20No%20Way%20Home.jpg",genre:"Action"},
   {title:"Hoppers",fileId:"13W8mK9e3QfBYGrzzBt8_qg5HI-EREG37",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Hoppers.jpg",genre:"Animation"},
-  {title:"Goat",fileId:"10FpMLZo0zSg-dwcBZVn6QDpZjeuqHthC",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/873637373737377/refs/heads/main/Goat%20Movie.jpg",genre:"Action"},
+  {title:"Goat",fileId:"1ejFJmseRX08D8AW4AchpuYzl5rsJK22t",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/873637373737377/refs/heads/main/Goat%20Movie.jpg",genre:"Action"},
   {title:"Scream 7",fileId:"1OzXqgxaS5f0cgR33PZDIwi4FfIbhFvMc",thumbId:"11iwQ72QHTeB0YQO2N3wH4AcXcae4aFUU",genre:"Horror"},
   {title:"Five Nights At Freddy's 2",fileId:"1BmS75cTOmPFXkwv40WgJnoAaMbeo546v",thumbId:"18ir-YH8ODiU1aHw7yWSK4yvbjHHsDs90",genre:"Horror"},
   {title:"The King Of Kings",fileId:"1hFANffuc5AMPYA3Q1Cp8N4ZkP5D7M8tN",thumbId:"1KW882c4oVBRB-nmT-irenHBglDEIlWGY",genre:"Drama"},
   {title:"Predator Badlands",fileId:"1McJIylATyVjGaoMA6Fzu2aMrm3IL3MTp",thumbId:"1svD3nv-KWg2jI9HrdIC3p2QnuNTx0tMx",genre:"Action"},
   {title:"Zootopia 2",fileId:"1GhDREN9in7ZkoRNOXQCTvwsZYjxDjtwl",thumbId:"1hNnO-kw9OjOLmWkPh1C3Husl3sRKJ-YH",genre:"Animation"},
+  {title:"Final Destination Bloodlines",fileId:"17JipNDL07Jb1ddmGow7MmsynCT77MmhI",thumbId:"1M2yCQzMb3VbCDVfP7TppG58fI1nTSR6C",genre:"Horror"},
   {title:"Avatar Fire and Ash",fileId:"1uiIBHk5xdpysNXR09iSy6woGUqpFe4uF",thumbId:"1_dvp1zX0YN7KZsGo8sPJJZK2xNLH-kJT",genre:"Sci-Fi"},
   {title:"The SpongeBob Movie",fileId:"1QCfesoM4uweiz1azvvgDAdHwVNU3duzF",thumbId:"1ow4eXnTJm8FZRylwwetjaXfPcX4Tjm2z",genre:"Animation"},
   {title:"A Minecraft Movie",fileId:"1BLKqInNh03tNScTrvtR14r3nFk5bhR7f",thumbId:"1yxNaS2Omfj0UTvsUfLHy6vuS3zVcKdV3",genre:"Animation"},
