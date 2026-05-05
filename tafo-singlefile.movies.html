@@ -1,258 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Tafo Movies</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000814;color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embed Launcher</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
 
-#waveCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      /* Using green for the text color per your preference */
+      color: green !important; 
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none !important;
+      transition: background-color 0.3s, transform 0.2s;
+    }
 
-body::after{
-  content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);
-  pointer-events:none;z-index:2;
-}
-
-nav{
-  position:fixed;top:0;width:100%;z-index:1000;
-  padding:0 5%;height:62px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:linear-gradient(to bottom,rgba(0,5,18,0.96),transparent);
-  border-bottom:1px solid rgba(255,255,255,0.05);
-}
-
-.logo{
-  display:flex;align-items:center;gap:10px;
-  font-family:'Bebas Neue';font-size:24px;letter-spacing:5px;color:#fff;
-  text-decoration:none;
-}
-.logo-text span{color:rgba(120,170,255,0.85)}
-
-#searchBox{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.13);
-  color:#fff;padding:7px 16px;border-radius:20px;width:160px;outline:none;transition:.2s;
-}
-
-#genreBar{
-  position:sticky;top:62px;z-index:900;
-  padding:10px 5%;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
-  background:rgba(0,6,20,0.75);backdrop-filter:blur(14px);
-  border-bottom:1px solid rgba(255,255,255,0.05);
-}
-.gBtn{
-  background:transparent;border:1px solid rgba(255,255,255,0.15);
-  color:rgba(255,255,255,0.55);padding:5px 16px;border-radius:20px;
-  font-size:11px;cursor:pointer;transition:.2s;white-space:nowrap;
-}
-.gBtn.active{background:rgba(255,255,255,0.95);color:#000;font-weight:700}
-
-#featured{
-  position:relative;height:400px;
-  display:flex;align-items:flex-end;
-  padding:0 5% 36px;overflow:hidden;z-index:10;
-}
-#featBg{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center top;
-  transition:opacity .9s ease;z-index:-1;
-}
-#featBg::after{
-  content:'';position:absolute;inset:0;
-  background:
-    linear-gradient(to right,rgba(0,5,20,0.98) 0%,rgba(0,5,20,0.65) 40%,transparent 75%),
-    linear-gradient(to top,rgba(0,5,20,1) 0%,rgba(0,5,20,0.4) 35%,transparent 65%);
-}
-#featTitle{font-family:'Bebas Neue';font-size:50px;margin-bottom:14px;}
-
-.watchBtn{
-  background:#fff;border:none;padding:11px 28px;font-weight:700;
-  cursor:pointer;border-radius:4px;color:#000;
-}
-
-.section{padding:28px 5%;z-index:20;position:relative}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:25px}
-
-.card{
-  cursor:pointer;position:relative;
-  transition:transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.card:active{transform:scale(0.92);}
-.card img{
-  width:100%;aspect-ratio:2/3;object-fit:cover;display:block;
-  border-radius:10px;border:1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-}
-.card:hover img{border-color:rgba(100,160,255,0.5);}
-
-.cardTitle{
-  margin-top:10px;font-size:12px;font-weight:600;
-  text-align:left;color:rgba(255,255,255,0.9);
-  display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-
-#videoOverlay{
-  position:fixed;inset:0;background:#000;z-index:2000;
-  display:none;flex-direction:column;
-  transform:translateY(100%);transition:transform 0.5s ease;
-}
-#videoOverlay.active{display:flex;transform:translateY(0);}
-
-#closePlayer{
-  position:absolute;top:20px;right:30px;z-index:2100;
-  background:rgba(255,255,255,0.1);color:#fff;border:none;
-  width:45px;height:45px;border-radius:50%;font-size:24px;
-  cursor:pointer;backdrop-filter:blur(10px);transition:0.3s;
-}
-#closePlayer:hover{background:rgba(255,0,0,0.6);transform:rotate(90deg)}
-
-iframe{width:100%;height:100%;border:none;}
-</style>
+    .button:hover {
+      background-color: #1a1a1a !important;
+    }
+  </style>
 </head>
 <body>
 
-<canvas id="waveCanvas"></canvas>
+  <a id="button" class="button">Launch TafoChat</a>
 
-<nav>
-  <div class="logo"><div class="logo-text">TAFO <span>MOVIES</span></div></div>
-  <input type="text" id="searchBox" placeholder="Search..." oninput="handleSearch()">
-</nav>
-
-<div id="genreBar"></div>
-
-<div id="featured">
-  <div id="featBg"></div>
-  <div id="featContent">
-    <h1 id="featTitle"></h1>
-    <button class="watchBtn" onclick="playFeatured()">WATCH NOW</button>
-  </div>
-</div>
-
-<div id="mainContent"></div>
-
-<div id="videoOverlay">
-  <button id="closePlayer" onclick="closeMovie()">×</button>
-  <iframe id="playerFrame" src="" allowfullscreen></iframe>
-</div>
-
-<script>
-(function(){
-  const c=document.getElementById('waveCanvas');
-  const ctx=c.getContext('2d');
-  let W,H,t=0;
-  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
-  resize();window.addEventListener('resize',resize);
-  const waves=[
-    {amp:60, freq:0.0018, speed:0.0006, y:0.55, alpha:0.06, width:3},
-    {amp:40, freq:0.0025, speed:0.0009, y:0.62, alpha:0.05, width:2},
-  ];
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    const bg=ctx.createLinearGradient(0,0,0,H);
-    bg.addColorStop(0,'#000814'); bg.addColorStop(1,'#000510');
-    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-    waves.forEach(w=>{
-      ctx.beginPath();
-      const baseY=H*w.y; ctx.moveTo(0,baseY);
-      for(let x=0;x<=W;x+=3){
-        const y=baseY+Math.sin(x*w.freq+t*w.speed*10000)*w.amp;
-        ctx.lineTo(x,y);
-      }
-      ctx.strokeStyle=`rgba(60,140,255,${w.alpha*2.5})`; ctx.lineWidth=w.width; ctx.stroke();
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const button = document.getElementById('button');
+      button.addEventListener('click', launch);
     });
-    t+=16; requestAnimationFrame(draw);
-  }
-  draw();
-})();
 
-const movies=[
-  {title:"The Legend Of Aang: The Last Airbender",fileId:"1GLkdpNumWIYJ8rw6kUJgf5NiDLsaUDLU",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/The%20Legend%20Of%20Aang%3A%20The%20Last%20Airbender.jpg",genre:"Action"},
-  {title:"The Super Mario Galaxy Movie",fileId:"1wThJWyfKo3rKu0iZ3orn8XryPMfYeL5K",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/The%20Super%20Mario%20Galaxy%20Movie.jpeg",genre:"Animation"},
-  {title:"Terrifier 2",fileId:"1_Jjo7rOcCkYt3UryVkV2XvTfrL4QvHTE",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Terrifier%202.jpeg",genre:"Horror"},
-  {title:"Terrifier",fileId:"1_pQ3kbz_a8l3B7SKfdP9dYQwKax0WHUD",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Terrifier.jpg",genre:"Horror"},
-  {title:"Spider-Man: No Way Home",fileId:"1mUF4PcT0_ZKofV0KHHdjxgTQdhF2BliQ",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Spider%20Man%20No%20Way%20Home.jpg",genre:"Action"},
-  {title:"Hoppers",fileId:"13W8mK9e3QfBYGrzzBt8_qg5HI-EREG37",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Hoppers.jpg",genre:"Animation"},
-  {title:"Goat",fileId:"1ejFJmseRX08D8AW4AchpuYzl5rsJK22t",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/873637373737377/refs/heads/main/Goat%20Movie.jpg",genre:"Action"},
-  {title:"Scream 7",fileId:"1OzXqgxaS5f0cgR33PZDIwi4FfIbhFvMc",thumbId:"11iwQ72QHTeB0YQO2N3wH4AcXcae4aFUU",genre:"Horror"},
-  {title:"Five Nights At Freddy's 2",fileId:"1BmS75cTOmPFXkwv40WgJnoAaMbeo546v",thumbId:"18ir-YH8ODiU1aHw7yWSK4yvbjHHsDs90",genre:"Horror"},
-  {title:"The King Of Kings",fileId:"1hFANffuc5AMPYA3Q1Cp8N4ZkP5D7M8tN",thumbId:"1KW882c4oVBRB-nmT-irenHBglDEIlWGY",genre:"Drama"},
-  {title:"Predator Badlands",fileId:"1McJIylATyVjGaoMA6Fzu2aMrm3IL3MTp",thumbId:"1svD3nv-KWg2jI9HrdIC3p2QnuNTx0tMx",genre:"Action"},
-  {title:"Zootopia 2",fileId:"1GhDREN9in7ZkoRNOXQCTvwsZYjxDjtwl",thumbId:"1hNnO-kw9OjOLmWkPh1C3Husl3sRKJ-YH",genre:"Animation"},
-  {title:"Final Destination Bloodlines",fileId:"17JipNDL07Jb1ddmGow7MmsynCT77MmhI",thumbId:"1M2yCQzMb3VbCDVfP7TppG58fI1nTSR6C",genre:"Horror"},
-  {title:"Avatar Fire and Ash",fileId:"1uiIBHk5xdpysNXR09iSy6woGUqpFe4uF",thumbId:"1_dvp1zX0YN7KZsGo8sPJJZK2xNLH-kJT",genre:"Sci-Fi"},
-  {title:"The SpongeBob Movie",fileId:"1QCfesoM4uweiz1azvvgDAdHwVNU3duzF",thumbId:"1ow4eXnTJm8FZRylwwetjaXfPcX4Tjm2z",genre:"Animation"},
-  {title:"A Minecraft Movie",fileId:"1BLKqInNh03tNScTrvtR14r3nFk5bhR7f",thumbId:"1yxNaS2Omfj0UTvsUfLHy6vuS3zVcKdV3",genre:"Animation"},
-  {title:"Jurassic World Rebirth",fileId:"1XoKZI3uQSKBceTDceJNc9ei1Qg5mTAAR",thumbId:"1kwO4fgmhTdy94v0qGt4LSnpVxRx4Zq-j",genre:"Action"},
-  {title:"Venom The Last Dance",fileId:"1ZdhRDJac7D5Q9CXHYdPo_uoQU9aM7Mci",thumbId:"1yAkIvhOUL3ykjCzwn6LsEXW_3Ffg1zbj",genre:"Action"},
-  {title:"Free Guy",fileId:"1hX1_ZAHWd3RN_rd3-_cbyyxDdbkHRWhX",thumbId:"1safiTQrxrHKEyUNuL8kaxa4D0y3pmmTo",genre:"Comedy"},
-  {title:"Demon Slayer",fileId:"1dcai7qLs1IZOcrdQolWdtfsXtXRtnYDM",thumbId:"1M7FcUQG7wzDboYsjxmCII88jXY47MfTA",genre:"Anime"},
-  {title:"The Maze Runner",fileId:"1dIooALZfs2ikuPyR3hIuyp-qQqB4Wlhz",thumbId:"1HT2cg6GingEYFhp_lCgVeZ-zLJaIGl4J",genre:"Sci-Fi"},
-  {title:"Scorch Trials",fileId:"17u-qz9Kgf5w-1c6neoLGRgbiR2wzVIzL",thumbId:"1lABI8dJkMiBo45kF8-LbKxWznjW5Zz96",genre:"Sci-Fi"},
-  {title:"Death Cure",fileId:"1vlDHAn12emUejVX6D1HV_imiNFczhhQ5",thumbId:"1iN1-rFiO-HHaM_Jw0AL1U92BU5oKgP05",genre:"Sci-Fi"},
-  {title:"FNAF 1",fileId:"19kb8uiVb01NA2ZsTq4-KgsLp1Z5MalI1",thumbId:"116AGGj_wc6hUZQIbwU6mbx4gm_BWY-Pd",genre:"Horror"},
-  {title:"Ratatouille",fileId:"1-4M0OT7lpvxc4BdoFp9rEcBiV6zXL_Gl",thumbId:"1iKyBbH_g2dXGM9MJmLMZEO2yTNoaRMzh",genre:"Animation"},
-  {title:"Coco",fileId:"194M4dGCwh1hTxVM1-_axnLSdt4trnbK2",thumbId:"160bAd_MaRy7uO5ey3Z9mM96z351pX92m",genre:"Animation"}
-];
-
-let activeGenre="All",searchTerm="",featIdx=0;
-const cycleMovies=movies.slice(0,10);
-
-function updateFeat(){
-  const bg=document.getElementById('featBg'),m=cycleMovies[featIdx];
-  const img=m.thumbUrl||`https://drive.google.com/thumbnail?id=${m.thumbId}&sz=w1000`;
-  bg.classList.add('fade');
-  setTimeout(()=>{
-    bg.style.backgroundImage=`url('${img}')`;
-    document.getElementById('featTitle').textContent=m.title;
-    bg.classList.remove('fade');
-  },500);
-  featIdx=(featIdx+1)%cycleMovies.length;
-}
-setInterval(updateFeat,4000);
-
-function buildG(){
-  const g=["All",...new Set(movies.map(m=>m.genre))];
-  document.getElementById('genreBar').innerHTML=g.map(x=>`<button class="gBtn ${x===activeGenre?'active':''}" onclick="activeGenre='${x}';buildG();render()">${x}</button>`).join('');
-}
-
-function render(){
-  const filtered=movies.filter(m=>(activeGenre==="All"||m.genre===activeGenre)&&m.title.toLowerCase().includes(searchTerm));
-  document.getElementById('mainContent').innerHTML=`<div class="section"><div class="grid">${filtered.map(m=>{
-    const img=m.thumbUrl||`https://drive.google.com/thumbnail?id=${m.thumbId}&sz=w400`;
-    return `<div class="card" onclick="openMovie('${m.title.replace(/'/g,"\\'")}','${m.fileId}')">
-      <img src="${img}" loading="lazy">
-      <div class="cardTitle">${m.title}</div>
-    </div>`;
-  }).join('')}</div></div>`;
-}
-
-function openMovie(t,id){
-  const overlay = document.getElementById('videoOverlay');
-  const frame = document.getElementById('playerFrame');
-  frame.src = `https://drive.google.com/file/d/${id}/preview`;
-  overlay.style.display = 'flex';
-  setTimeout(() => overlay.classList.add('active'), 10);
-  document.body.style.overflow = 'hidden';
-}
-
-function closeMovie(){
-  const overlay = document.getElementById('videoOverlay');
-  const frame = document.getElementById('playerFrame');
-  overlay.classList.remove('active');
-  setTimeout(() => {
-    overlay.style.display = 'none';
-    frame.src = "";
-  }, 500);
-  document.body.style.overflow = 'auto';
-}
-
-function playFeatured(){const t=document.getElementById('featTitle').textContent,m=movies.find(x=>x.title===t);openMovie(m.title,m.fileId)}
-function handleSearch(){searchTerm=document.getElementById('searchBox').value.toLowerCase();render()}
-
-updateFeat();buildG();render();
-</script>
+    function launch() {
+      const targetUrl = "https://cdn.jsdelivr.net/gh/TafoHubOffical/TafoHub-DONTDMCA-TafoChat-222@main/Tafo-Chat-SingleFile.html";
+      
+      try {
+        // Fetching the raw HTML text from the CDN
+        fetch(targetUrl + "?t=" + Date.now())
+          .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.text();
+          })
+          .then(htmlContent => {
+            // Opening the blank window
+            const newWin = window.open("about:blank", "_blank");
+            if (newWin) {
+              // Injecting the fetched HTML code directly into the new window
+              newWin.document.open();
+              newWin.document.write(htmlContent);
+              newWin.document.close();
+            } else {
+              alert("Pop-up blocked! Please allow pop-ups for this site.");
+            }
+          })
+          .catch(err => {
+            console.error('Fetch error:', err);
+          });
+      } catch (error) {
+        console.error('Execution error:', error);
+      }
+    }
+  </script>
 </body>
 </html>
