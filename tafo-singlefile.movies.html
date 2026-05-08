@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Tafo Movies - Red Edition</title>
+<title>TafoFlix</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -18,28 +18,39 @@ body::after{
 
 nav{
   position:fixed;top:0;width:100%;z-index:1000;
-  padding:0 5%;height:62px;
+  padding:0 5%;height:70px;
   display:flex;align-items:center;justify-content:space-between;
   background:linear-gradient(to bottom,rgba(15,0,0,0.98),transparent);
   border-bottom:1px solid rgba(255,0,0,0.15);
 }
 
-.logo{
-  display:flex;align-items:center;gap:10px;
-  font-family:'Bebas Neue';font-size:24px;letter-spacing:5px;color:#fff;
-  text-decoration:none;
-}
-.logo-text span{color:#b30000; text-shadow: 0 0 10px rgba(255,0,0,0.5);}
+.logo{font-family:'Bebas Neue';font-size:28px;letter-spacing:4px;color:#fff;text-decoration:none}
+.logo span{color:#e50914; text-shadow: 0 0 15px rgba(229,9,20,0.6)}
+
+.nav-right { display: flex; align-items: center; gap: 15px }
 
 #searchBox{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  color:#fff;padding:7px 16px;border-radius:4px;width:180px;outline:none;transition:.2s;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(229, 9, 20, 0.4);
+  color: #fff; padding: 8px 16px; border-radius: 4px; width: 200px;
+  outline: none; transition: 0.3s;
+  box-shadow: 0 0 5px rgba(229, 9, 20, 0.1);
 }
-#searchBox:focus{border-color:#b30000; background:rgba(255,0,0,0.05)}
+#searchBox:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.requestBtn {
+  background: #e50914; color: #fff; border: none; padding: 8px 16px;
+  border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer;
+  text-transform: uppercase; transition: 0.3s;
+}
+.requestBtn:hover { background: #ff1f1f; transform: translateY(-2px) }
 
 #genreBar{
-  position:sticky;top:62px;z-index:900;
+  position:sticky;top:70px;z-index:900;
   padding:10px 5%;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
   background:rgba(10,0,0,0.85);backdrop-filter:blur(15px);
   border-bottom:1px solid rgba(255,0,0,0.1);
@@ -49,7 +60,7 @@ nav{
   color:#888;padding:5px 16px;border-radius:4px;
   font-size:11px;cursor:pointer;transition:.2s;white-space:nowrap;text-transform:uppercase;
 }
-.gBtn.active{background:#b30000;color:#fff;border-color:transparent;font-weight:700}
+.gBtn.active{background:#e50914;color:#fff;border-color:transparent;font-weight:700}
 
 #featured{
   position:relative;height:450px;
@@ -69,75 +80,57 @@ nav{
 }
 #featTitle{
     font-family:'Bebas Neue';font-size:60px;margin-bottom:14px;
-    color:#fff;text-shadow: 0 0 20px rgba(179, 0, 0, 0.8);
+    color:#fff;text-shadow: 0 0 20px rgba(229, 9, 20, 0.8);
 }
 
 .watchBtn{
-  background:#b30000;border:none;padding:12px 32px;font-weight:700;
-  cursor:pointer;border-radius:2px;color:#fff;letter-spacing:1px;
-  transition: 0.3s;
+  background:#e50914;border:none;padding:12px 32px;font-weight:700;
+  cursor:pointer;border-radius:2px;color:#fff;letter-spacing:1px;transition: 0.3s;
 }
-.watchBtn:hover{background:#ff0000; transform: scale(1.05);}
+.watchBtn:hover{background:#ff1f1f; transform: scale(1.05)}
 
 .section{padding:30px 5%;z-index:20;position:relative}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:30px}
 
-.card{
-  cursor:pointer;position:relative;
-  transition:transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-.card:active{transform:scale(0.95);}
+.card{ cursor:pointer; position:relative; transition:0.4s; }
 .card img{
   width:100%;aspect-ratio:2/3;object-fit:cover;display:block;
   border-radius:4px;border:1px solid rgba(255,255,255,0.05);
   filter: grayscale(0.2); transition: 0.4s;
 }
-.card:hover img{border-color:#b30000; filter: grayscale(0); box-shadow: 0 0 20px rgba(179,0,0,0.4);}
+.card:hover img{border-color:#e50914; filter: grayscale(0); box-shadow: 0 0 20px rgba(229,9,20,0.3);}
+.cardTitle{ margin-top:12px;font-size:12px;font-weight:700; color:#bbb; text-transform: uppercase; }
 
-.cardTitle{
-  margin-top:12px;font-size:12px;font-weight:700;
-  text-align:left;color:#bbb;
-  text-transform: uppercase; letter-spacing: 0.5px;
+/* MODAL SYSTEM */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:2000;
+  display:none; align-items: center; justify-content: center;
+  opacity: 0; transition: 0.4s ease;
 }
-.card:hover .cardTitle{color:#fff;}
+.modal-overlay.active{ display:flex; opacity: 1; }
 
-/* PLAYER OVERLAY */
-#videoOverlay{
-  position:fixed;inset:0;background:#000;z-index:2000;
-  display:none;flex-direction:column;
-  transform:translateY(100%);transition:transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+.modal-content {
+    width: 90%; height: 85%; background: #000; border: 1px solid #e50914;
+    position: relative; transform: scale(0.8); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#videoOverlay.active{display:flex;transform:translateY(0);}
+.modal-overlay.active .modal-content { transform: scale(1); }
 
-.player-controls {
-  position: absolute; top: 20px; right: 30px; z-index: 2100;
-  display: flex; gap: 15px; align-items: center;
+.close-modal {
+    position: absolute; top: -45px; right: 0;
+    background: #e50914; color: #fff; border: none;
+    width: 35px; height: 35px; font-size: 20px; font-weight: bold;
+    cursor: pointer; border-radius: 4px; display: flex; align-items: center; justify-content: center;
 }
-
-#fallbackBtn {
-  background: rgba(179, 0, 0, 0.8);
-  border: 1px solid #ff0000;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-  transition: 0.3s;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-#fallbackBtn:hover { background: #ff0000; box-shadow: 0 0 15px rgba(255,0,0,0.5); }
-
-#closePlayer{
-  background:rgba(255,255,255,0.1);color:#fff;border:none;
-  width:42px;height:42px;border-radius:4px;font-size:24px;
-  cursor:pointer;transition:0.3s;
-}
-#closePlayer:hover{background:#b30000;}
+.close-modal:hover { background: #ff1f1f }
 
 iframe{width:100%;height:100%;border:none;}
+
+#fallbackBtn {
+  position: absolute; top: -45px; left: 0;
+  background: rgba(179, 9, 20, 0.8); color: #fff; padding: 8px 15px;
+  border-radius: 4px; font-size: 11px; text-decoration: none; border: 1px solid #e50914;
+  font-weight: bold; text-transform: uppercase;
+}
 </style>
 </head>
 <body>
@@ -145,8 +138,11 @@ iframe{width:100%;height:100%;border:none;}
 <canvas id="waveCanvas"></canvas>
 
 <nav>
-  <div class="logo"><div class="logo-text">TAFO <span>MOVIES</span></div></div>
-  <input type="text" id="searchBox" placeholder="SEARCH MOVIES..." oninput="handleSearch()">
+  <div class="logo">TAFO<span>FLIX</span></div>
+  <div class="nav-right">
+    <input type="text" id="searchBox" placeholder="SEARCH..." oninput="handleSearch()">
+    <button class="requestBtn" onclick="openRequest()">Request Movies</button>
+  </div>
 </nav>
 
 <div id="genreBar"></div>
@@ -161,43 +157,40 @@ iframe{width:100%;height:100%;border:none;}
 
 <div id="mainContent"></div>
 
-<div id="videoOverlay">
-  <div class="player-controls">
-    <a id="fallbackBtn" target="_blank">Click if movie doesn't load</a>
-    <button id="closePlayer" onclick="closeMovie()">×</button>
+<div id="modalOverlay" class="modal-overlay">
+  <div class="modal-content">
+    <a id="fallbackBtn" target="_blank" style="display:none">Open in New Tab</a>
+    <button class="close-modal" onclick="closeModal()">×</button>
+    <iframe id="modalFrame" src="" allowfullscreen></iframe>
   </div>
-  <iframe id="playerFrame" src="" allowfullscreen></iframe>
 </div>
 
 <script>
 (function(){
-  const c=document.getElementById('waveCanvas');
-  const ctx=c.getContext('2d');
+  const c=document.getElementById('waveCanvas'), ctx=c.getContext('2d');
   let W,H,t=0;
-  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
-  resize();window.addEventListener('resize',resize);
+  function r(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  r(); window.addEventListener('resize',r);
   function draw(){
     ctx.clearRect(0,0,W,H);
     ctx.fillStyle='#0a0000'; ctx.fillRect(0,0,W,H);
-    const rg=ctx.createRadialGradient(W*0.5,H*0.5,0,W*0.5,H*0.5,W);
-    rg.addColorStop(0,'rgba(40,0,0,0.4)'); rg.addColorStop(1,'transparent');
+    const rg=ctx.createRadialGradient(W*.5,H*.5,0,W*.5,H*.5,W);
+    rg.addColorStop(0,'rgba(60,0,0,0.3)'); rg.addColorStop(1,'transparent');
     ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
-    ctx.beginPath();
-    ctx.strokeStyle='rgba(179,0,0,0.15)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.strokeStyle='rgba(229,9,20,0.12)'; ctx.lineWidth=2;
     for(let x=0;x<=W;x+=5){
-      const y=H*0.7 + Math.sin(x*0.002+t*0.001)*50;
+      const y=H*.7 + Math.sin(x*.002+t*.001)*50;
       x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
     }
-    ctx.stroke();
-    t+=16; requestAnimationFrame(draw);
+    ctx.stroke(); t+=16; requestAnimationFrame(draw);
   }
   draw();
 })();
 
 const movies=[
-  {title:"Hoppers",fileId:"1ZFVkHevCTy8kTGhD-0fHnz68F_WLV98-",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Hoppers.jpg",genre:"Animation"},
-  {title:"The Super Mario Galaxy Movie",fileId:"1peOVhCOAfeAmXspIQVx2AO8sF3GnD561",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/The%20Super%20Mario%20Galaxy%20Movie.jpeg",genre:"Animation"},
+  {title:"The Super Mario Galaxy Movie",fileId:"1peOVhCOAfeAmXspIQVx2AO8sF3GnD561",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/the-super-mario-galaxy-movie-teaser-poster-1080x1600.jpg",genre:"Animation"},
   {title:"Superman",fileId:"1EWEYnOyTNmNYjWpbNLPZZRBWGrSg1l_B",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/Superman%202025.jpg",genre:"Action"},
+  {title:"Hoppers",fileId:"1ZFVkHevCTy8kTGhD-0fHnz68F_WLV98-",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Hoppers.jpg",genre:"Animation"},
   {title:"Bad Boys Ride Or Die",fileId:"1EpaiYzpPTen1OBc1aya_fP6G18lgGcUs",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/Bad%20Boys%20Ride%20Or%20Die.jpeg",genre:"Action"},
   {title:"The Legend Of Aang: The Last Airbender",fileId:"1GLkdpNumWIYJ8rw6kUJgf5NiDLsaUDLU",thumbUrl:"https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222/refs/heads/main/The%20Legend%20Of%20Aang%3A%20The%20Last%20Airbender.jpg",genre:"Action"},
   {title:"Terrifier 2",fileId:"1_Jjo7rOcCkYt3UryVkV2XvTfrL4QvHTE",thumbUrl:"https://raw.githubusercontent.com/MISTERCOOL27277/Movie-Covers-86454433488/refs/heads/main/Terrifier%202.jpeg",genre:"Horror"},
@@ -219,18 +212,13 @@ const movies=[
 ];
 
 let activeGenre="All",searchTerm="",featIdx=0;
-const cycleMovies=movies.slice(0,8);
 
 function updateFeat(){
-  const bg=document.getElementById('featBg'),m=cycleMovies[featIdx];
+  const bg=document.getElementById('featBg'),m=movies[featIdx];
   const img=m.thumbUrl||`https://drive.google.com/thumbnail?id=${m.thumbId}&sz=w1000`;
-  bg.classList.add('fade');
-  setTimeout(()=>{
-    bg.style.backgroundImage=`url('${img}')`;
-    document.getElementById('featTitle').textContent=m.title;
-    bg.classList.remove('fade');
-  },500);
-  featIdx=(featIdx+1)%cycleMovies.length;
+  bg.style.backgroundImage=`url('${img}')`;
+  document.getElementById('featTitle').textContent=m.title;
+  featIdx=(featIdx+1)%8;
 }
 setInterval(updateFeat,5000);
 
@@ -251,32 +239,41 @@ function render(){
 }
 
 function openMovie(t,id){
-  const overlay = document.getElementById('videoOverlay');
-  const frame = document.getElementById('playerFrame');
-  const fallback = document.getElementById('fallbackBtn');
-  const videoUrl = `https://drive.google.com/file/d/${id}/preview`;
-  frame.src = videoUrl;
-  fallback.href = videoUrl;
-  overlay.style.display = 'flex';
-  setTimeout(() => overlay.classList.add('active'), 10);
-  document.body.style.overflow = 'hidden';
+  const overlay=document.getElementById('modalOverlay'), frame=document.getElementById('modalFrame'), fb=document.getElementById('fallbackBtn');
+  const url=`https://drive.google.com/file/d/${id}/preview`;
+  frame.src=url; fb.href=url; fb.style.display='block';
+  overlay.style.display='flex';
+  setTimeout(()=>overlay.classList.add('active'), 10);
+  document.body.style.overflow='hidden';
 }
 
-function closeMovie(){
-  const overlay = document.getElementById('videoOverlay');
-  const frame = document.getElementById('playerFrame');
+function openRequest(){
+  const overlay=document.getElementById('modalOverlay'), frame=document.getElementById('modalFrame');
+  document.getElementById('fallbackBtn').style.display='none';
+  frame.src="https://docs.google.com/forms/d/e/1FAIpQLSf7YYs2uVewjNqVj-E0HkYYoRNv6q90nrRc3xD2pgD6GY2JkQ/viewform?embedded=true";
+  overlay.style.display='flex';
+  setTimeout(()=>overlay.classList.add('active'), 10);
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  const overlay=document.getElementById('modalOverlay');
   overlay.classList.remove('active');
-  setTimeout(() => {
-    overlay.style.display = 'none';
-    frame.src = "";
-  }, 600);
-  document.body.style.overflow = 'auto';
+  setTimeout(()=>{
+    overlay.style.display='none';
+    document.getElementById('modalFrame').src="";
+    document.body.style.overflow='auto';
+  }, 400);
 }
 
-function playFeatured(){const t=document.getElementById('featTitle').textContent,m=movies.find(x=>x.title===t);openMovie(m.title,m.fileId)}
+function playFeatured(){
+  const t=document.getElementById('featTitle').textContent, m=movies.find(x=>x.title===t);
+  openMovie(m.title,m.fileId);
+}
+
 function handleSearch(){searchTerm=document.getElementById('searchBox').value.toLowerCase();render()}
 
-updateFeat();buildG();render();
+updateFeat(); buildG(); render();
 </script>
 </body>
 </html>
