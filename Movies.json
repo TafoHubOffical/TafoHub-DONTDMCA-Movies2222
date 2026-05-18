@@ -1,20 +1,65 @@
 [
   {
-   "CDN": "https://cdn.jsdelivr.net/gh/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222@main/" 
+    "CDN": "https://cdn.jsdelivr.net/gh/TafoHubOffical/TafoHub-DONTDMCA-MovieCover-222@main/"
   },
   {
-   "title": "Lightyear",
-   "fileId": "1-08D_Ce2HwhC0PF7dO_o3TprWl77tGQk",
-   "genre": "Animation, Action, Adventure, Sci-Fi"
+    "title": "Karate Kid: Legends",
+    "fileId": "1v7ujloX-mQ_2kSN7inxSSDIYnkpymWBU",
+    "genre": "Action, Drama"
   },
   {
-   "title": "Karate Kid: Legends",
-   "fileId": "1v7ujloX-mQ_2kSN7inxSSDIYnkpymWBU",
-   "genre": "Action, Drama"
+    "title": "Lightyear",
+    "fileId": "1-08D_Ce2HwhC0PF7dO_o3TprWl77tGQk",
+    "genre": "Animation, Action, Adventure, Sci-Fi"
   },
   {
     "title": "Superman",
     "fileId": "1EWEYnOyTNmNYjWpbNLPZZRBWGrSg1l_B",
+    "genre": "Action, Sci-Fi, Adventure"
+  },
+  {
+    "title": "Hoppers",
+    "fileId": "13W8mK9e3QfBYGrzzBt8_qg5HI-EREG37",
+    "genre": "Animation, Comedy"
+  },
+  {
+    "title": "Scream 7",
+    "fileId": "1OzXqgxaS5f0cgR33PZDIwi4FfIbhFvMc",
+    "genre": "Horror"
+  },
+  {
+    "title": "Predator Badlands",
+    "fileId": "1McJIylATyVjGaoMA6Fzu2aMrm3IL3MTp",
+    "genre": "Action, Sci-Fi, Thriller"
+  },
+  {
+    "title": "Zootopia 2",
+    "fileId": "1GhDREN9in7ZkoRNOXQCTvwsZYjxDjtwl",
+    "genre": "Animation, Comedy"
+  },
+  {
+    "title": "Final Destination Bloodlines",
+    "fileId": "17JipNDL07Jb1ddmGow7MmsynCT77MmhI",
+    "genre": "Horror, Thriller"
+  },
+  {
+    "title": "Avatar Fire and Ash",
+    "fileId": "1uiIBHk5xdpysNXR09iSy6woGUqpFe4uF",
+    "genre": "Sci-Fi, Action, Adventure"
+  },
+  {
+    "title": "The SpongeBob Movie Search For SquarePants",
+    "fileId": "1QCfesoM4uweiz1azvvgDAdHwVNU3duzF",
+    "genre": "Animation, Comedy, Adventure"
+  },
+  {
+    "title": "A Minecraft Movie",
+    "fileId": "1BLKqInNh03tNScTrvtR14r3nFk5bhR7f",
+    "genre": "Animation, Action, Fantasy"
+  },
+  {
+    "title": "Jurassic World Rebirth",
+    "fileId": "1XoKZI3uQSKBceTDceJNc9ei1Qg5mTAAR",
     "genre": "Action, Sci-Fi, Adventure"
   },
   {
@@ -33,29 +78,19 @@
     "genre": "Action, Comedy, Crime"
   },
   {
-    "title": "Hoppers",
-    "fileId": "13W8mK9e3QfBYGrzzBt8_qg5HI-EREG37",
-    "genre": "Animation, Comedy"
-  },
-  {
     "title": "Goat",
     "fileId": "10FpMLZo0zSg-dwcBZVn6QDpZjeuqHthC",
     "genre": "Action, Drama"
   },
   {
-    "title": "Scream 7",
-    "fileId": "1OzXqgxaS5f0cgR33PZDIwi4FfIbhFvMc",
-    "genre": "Horror"
-  },
-  {
     "title": "Primate",
-    "genre": "Horror, Sci-Fi",
-    "fileId": "18x_1tiWEXhSP1eSVilTVhWau4S2zduDX"
+    "fileId": "18x_1tiWEXhSP1eSVilTVhWau4S2zduDX",
+    "genre": "Horror, Sci-Fi"
   },
   {
     "title": "Do Not Enter",
-    "genre": "Thriller, Horror",
-    "fileId": "1Ro51Je6-wyN_jfaNPzQBb-cMV7S4Pkg6"
+    "fileId": "1Ro51Je6-wyN_jfaNPzQBb-cMV7S4Pkg6",
+    "genre": "Thriller, Horror"
   },
   {
     "title": "Swapped",
@@ -93,44 +128,14 @@
     "genre": "Horror"
   },
   {
+    "title": "Spider-Man: No Way Home",
+    "fileId": "1mUF4PcT0_ZKofV0KHHdjxgTQdhF2BliQ",
+    "genre": "Action, Sci-Fi, Adventure"
+  },
+  {
     "title": "Five Nights At Freddy's 2",
     "fileId": "1BmS75cTOmPFXkwv40WgJnoAaMbeo546v",
     "genre": "Horror, Sci-Fi"
-  },
-  {
-    "title": "Predator Badlands",
-    "fileId": "1McJIylATyVjGaoMA6Fzu2aMrm3IL3MTp",
-    "genre": "Action, Sci-Fi, Thriller"
-  },
-  {
-    "title": "Zootopia 2",
-    "fileId": "1GhDREN9in7ZkoRNOXQCTvwsZYjxDjtwl",
-    "genre": "Animation, Comedy"
-  },
-  {
-    "title": "Final Destination Bloodlines",
-    "fileId": "17JipNDL07Jb1ddmGow7MmsynCT77MmhI",
-    "genre": "Horror, Thriller"
-  },
-  {
-    "title": "Avatar Fire and Ash",
-    "fileId": "1uiIBHk5xdpysNXR09iSy6woGUqpFe4uF",
-    "genre": "Sci-Fi, Action, Adventure"
-  },
-  {
-    "title": "The SpongeBob Movie Search For SquarePants",
-    "fileId": "1QCfesoM4uweiz1azvvgDAdHwVNU3duzF",
-    "genre": "Animation, Comedy, Adventure"
-  },
-  {
-    "title": "A Minecraft Movie",
-    "fileId": "1BLKqInNh03tNScTrvtR14r3nFk5bhR7f",
-    "genre": "Animation, Action, Fantasy"
-  },
-  {
-    "title": "Jurassic World Rebirth",
-    "fileId": "1XoKZI3uQSKBceTDceJNc9ei1Qg5mTAAR",
-    "genre": "Action, Sci-Fi, Adventure"
   },
   {
     "title": "Venom The Last Dance",
