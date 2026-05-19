@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TaFlix</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #e50914;
+  --red-glow: rgba(229,9,20,0.6);
+  --red-bright: #ff1f2b;
+  --bg: #030000;
+  --surface: #0d0d0d;
+  --surface2: #151515;
+  --text: #f0f0f0;
+  --muted: #888;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:6px }
+::-webkit-scrollbar-track { background:#0a0a0a }
+::-webkit-scrollbar-thumb { background:#333; border-radius:3px }
+::-webkit-scrollbar-thumb:hover { background:var(--red) }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 4000;
+  padding: 0 5%; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
+  transition: background 0.3s;
+}
+nav.scrolled {
+  background: rgba(3,0,0,0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(229,9,20,0.15);
+}
+.logo {
+  font-family: 'Bebas Neue';
+  font-size: 34px;
+  letter-spacing: 3px;
+  color: #fff;
+  position: relative;
+}
+.logo span {
+  color: var(--red);
+  text-shadow: 0 0 20px var(--red-glow), 0 0 40px rgba(229,9,20,0.3);
+}
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 2px;
+  background: var(--red);
+  transition: width 0.4s ease;
+}
+.logo:hover::after { width: 100%; }
+
+.nav-right { display:flex; gap:12px; align-items:center }
+
+.reqBtn {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(229,9,20,0.6);
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-family: 'Outfit';
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s, border-color 0.3s;
+}
+.reqBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+.reqBtn:hover::before { transform: scaleX(1); }
+.reqBtn:hover { border-color: var(--red); }
+
+/* ─── HERO / FEATURED ─────────────────────────────────── */
+#featured {
+  position: relative;
+  height: 85vh;
+  min-height: 500px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 6% 8%;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+#featBg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center top;
+  transition: opacity 0.7s ease;
+  will-change: opacity;
+}
+#featBg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to right, rgba(3,0,0,0.97) 0%, rgba(3,0,0,0.6) 50%, transparent 100%),
+    linear-gradient(to top, rgba(3,0,0,1) 0%, rgba(3,0,0,0.4) 40%, transparent 100%);
+}
+
+#featContent {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+#featTitle {
+  font-family: 'Bebas Neue';
+  font-size: clamp(40px, 7vw, 90px);
+  line-height: 0.95;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+}
+
+.feat-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.feat-meta span { color: #aaa; }
+.feat-divider { width: 3px; height: 3px; border-radius: 50%; background: #444; }
+
+.hero-actions { display: flex; gap: 12px; align-items: center; }
+
+.watchBtn {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 14px 36px;
+  font-family: 'Outfit';
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.watchBtn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0);
+  transition: background 0.2s;
+}
+.watchBtn:hover { background: rgba(255,255,255,0.85); transform: scale(1.03); }
+
+.infoBtn {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 14px 28px;
+  font-family: 'Outfit';
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.2s, transform 0.2s;
+}
+.infoBtn:hover { background: rgba(255,255,255,0.22); transform: scale(1.03); }
+
+/* Swipe indicator */
+.swipe-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 6px;
+  z-index: 3;
+}
+.swipe-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transition: background 0.3s, transform 0.3s;
+}
+.swipe-dot.active {
+  background: var(--red);
+  transform: scale(1.4);
+  box-shadow: 0 0 8px var(--red-glow);
+}
+
+/* ─── SECTION HEADER ──────────────────────────────────── */
+.section-head {
+  padding: 20px 5% 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.section-head h2 {
+  font-family: 'Bebas Neue';
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: #fff;
+}
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(229,9,20,0.4), transparent);
+}
+.section-count {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ─── GRID ────────────────────────────────────────────── */
+#mainContent {
+  padding: 0 5% 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  cursor: pointer;
+  opacity: 0;
+  animation: cardReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  position: relative;
+  group: true;
+}
+@keyframes cardReveal {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.card-img-wrap {
+  width: 100%;
+  aspect-ratio: 2/3;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s;
+  will-change: transform;
+}
+.card:hover .card-img-wrap {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(229,9,20,0.5);
+  border-color: rgba(229,9,20,0.5);
+}
+
+.card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Hover overlay on card */
+.card-hover-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(3,0,0,0.95) 0%, rgba(3,0,0,0.3) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+}
+.card:hover .card-hover-overlay { opacity: 1; }
+
+.card-hover-play {
+  width: 36px; height: 36px;
+  background: var(--red);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 16px var(--red-glow);
+  transform: scale(0.7);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.card:hover .card-hover-play { transform: scale(1); }
+
+.play-icon { width:14px; height:14px; margin-left:2px; fill:#fff; }
+
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #777;
+  text-align: center;
+  padding-top: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s;
+  letter-spacing: 0.5px;
+}
+.card:hover .card-title { color: #bbb; }
+
+/* ─── DETAIL OVERLAY ─────────────────────────────────── */
+.overlay {
+  position: fixed; inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dark backdrop */
+.overlay-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0);
+  backdrop-filter: blur(10px);
+  transition: background 0.35s ease;
+}
+.overlay.active .overlay-backdrop {
+  background: rgba(0,0,0,0.85);
+}
+
+/* Info Modal */
+.info-stage {
+  position: relative;
+  width: 92vw;
+  max-width: 480px;
+  background: #0d0d0d;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.9), 0 0 0 1px rgba(229,9,20,0.1);
+  transform: scale(0.85) translateY(30px);
+  opacity: 0;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  z-index: 1;
+}
+.overlay.active .info-stage {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.info-banner {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+.info-banner-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(0.85);
+}
+@keyframes heroBannerZoom {
+  from { transform: scale(1.05); }
+  to   { transform: scale(1.12); }
+}
+.info-banner::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, #0d0d0d 0%, rgba(13,13,13,0.3) 60%, transparent 100%);
+}
+
+/* Red glow edge on banner */
+.info-banner-glow {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--red), transparent);
+  opacity: 0.7;
+}
+
+.info-body {
+  padding: 24px 28px 28px;
+  position: relative;
+}
+
+/* Floating close X */
+.closeX {
+  position: absolute;
+  top: 14px; right: 14px;
+  z-index: 10002;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+  font-family: 'Outfit';
+  font-weight: 300;
+  line-height: 1;
+}
+.closeX:hover {
+  background: var(--red);
+  border-color: var(--red);
+  transform: scale(1.1) rotate(90deg);
+}
+
+#infoTitle {
+  font-family: 'Bebas Neue';
+  font-size: 38px;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+  color: #fff;
+  line-height: 1;
+}
+
+.info-subtitle {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+#infoGenres {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.g-pill {
+  background: rgba(229,9,20,0.1);
+  border: 1px solid rgba(229,9,20,0.25);
+  color: rgba(229,9,20,0.9);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.g-pill:hover {
+  background: rgba(229,9,20,0.2);
+  border-color: rgba(229,9,20,0.5);
+}
+
+/* Play button */
+.playBtn {
+  width: 100%;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  padding: 16px;
+  font-family: 'Outfit';
+  font-weight: 800;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 20px rgba(229,9,20,0.4);
+}
+.playBtn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s ease;
+}
+.playBtn:hover::before { left: 100%; }
+.playBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(229,9,20,0.6);
+}
+.playBtn:active { transform: scale(0.98); }
+
+.play-tri {
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 12px solid #fff;
+  margin-left: 2px;
+  flex-shrink: 0;
+}
+
+/* ─── PLAYER OVERLAY ──────────────────────────────────── */
+#playerOverlay {
+  background: rgba(0,0,0,0);
+  transition: background 0.4s;
+}
+#playerOverlay.active { background: rgba(0,0,0,0.99); }
+
+.player-stage {
+  position: relative;
+  width: 100vw; height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 1;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+#playerOverlay.active .player-stage {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.player-frame-wrap {
+  position: relative;
+  width: 96vw;
+  max-width: 1140px;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(229,9,20,0.3), 0 40px 80px rgba(0,0,0,0.9);
+}
+/* Red scanline glow on player top */
+.player-frame-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(to right, transparent, var(--red), transparent);
+  z-index: 2;
+  animation: scanGlow 2s ease-in-out infinite;
+}
+@keyframes scanGlow {
+  0%,100% { opacity: 0.4; }
+  50% { opacity: 1; box-shadow: 0 0 12px var(--red); }
+}
+
+#movieFrame {
+  width: 100%; height: 100%;
+  border: none;
+  display: block;
+  background: #000;
+  border-radius: 12px;
+}
+
+.player-title-bar {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.player-movie-name {
+  font-family: 'Bebas Neue';
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.7);
+}
+.player-live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+  animation: blink 1s ease-in-out infinite;
+}
+.player-live-text {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--red);
+  text-transform: uppercase;
+}
+
+/* ─── REQUEST OVERLAY ─────────────────────────────────── */
+#reqOverlay {
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(20px);
+}
+.reqStage {
+  width: 92vw;
+  max-width: 500px;
+  height: 82vh;
+  background: #0a0a0a;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(229,9,20,0.2);
+  box-shadow: 0 0 60px rgba(229,9,20,0.1);
+  z-index: 1;
+  animation: modalSlide 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes modalSlide {
+  from { transform: translateY(30px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ─── LOADING SKELETON ────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #111 25%, #1a1a1a 50%, #111 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ─── RESPONSIVE ──────────────────────────────────────── */
+@media (max-width: 600px) {
+  #featured { height: 65vh; align-items: flex-end; padding: 0 5% 80px; }
+  #featTitle { font-size: clamp(36px, 10vw, 60px); }
+  .hero-actions { flex-wrap: wrap; }
+  .watchBtn, .infoBtn { padding: 12px 22px; font-size: 13px; }
+  #mainContent { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+  .player-frame-wrap { width: 100vw; border-radius: 0; aspect-ratio: 16/9; }
+  .player-title-bar { display: none; }
+  #movieFrame { border-radius: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="logo">TA<span>FLIX</span></div>
+  <div class="nav-right">
+    <button class="reqBtn" onclick="openOverlay('reqOverlay')">+ Request</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="featured" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
+  <div id="featBg"></div>
+  <div id="featContent">
+    <h1 id="featTitle">Loading...</h1>
+    <div class="feat-meta">
+      <span id="featYear">2024</span>
+      <div class="feat-divider"></div>
+      <span id="featGenre">—</span>
+      <div class="feat-divider"></div>
+      <span style="color:var(--red);font-weight:700">HD</span>
+    </div>
+    <div class="hero-actions">
+      <button class="watchBtn" onclick="openFeaturedDetails()">
+        <span class="play-tri"></span>
+        Watch Now
+      </button>
+      <button class="infoBtn" onclick="openFeaturedDetails()">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        More Info
+      </button>
+    </div>
+  </div>
+  <div class="swipe-hint" id="swipeDots"></div>
+</div>
+
+<!-- SECTION HEADER -->
+<div class="section-head">
+  <h2>All Movies</h2>
+  <div class="section-line"></div>
+  <span class="section-count" id="movieCount">—</span>
+</div>
+
+<!-- GRID -->
+<div id="mainContent"></div>
+
+<!-- ─── INFO OVERLAY ─── -->
+<div id="infoOverlay" class="overlay" onclick="handleOverlayClick(event, 'infoOverlay')">
+  <div class="overlay-backdrop"></div>
+  <div class="info-stage" id="infoStage">
+    <button class="closeX" onclick="closeOverlay('infoOverlay')">&times;</button>
+    <div class="info-banner">
+      <img id="infoBannerImg" class="info-banner-img" src="" alt="">
+      <div class="info-banner-glow"></div>
+    </div>
+    <div class="info-body">
+      <h2 id="infoTitle">Movie Title</h2>
+      <div class="info-subtitle" id="infoSub">TaFlix Original</div>
+      <div id="infoGenres"></div>
+      <button id="infoPlayBtn" class="playBtn">
+        <span class="play-tri"></span>
+        Play Movie
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PLAYER OVERLAY ─── -->
+<div id="playerOverlay" class="overlay" onclick="handleOverlayClick(event, 'playerOverlay')">
+  <div class="overlay-backdrop"></div>
+  <div class="player-stage">
+    <button class="closeX" onclick="closeOverlay('playerOverlay')" style="position:fixed;top:18px;right:18px;">&times;</button>
+    <div class="player-frame-wrap">
+      <iframe id="movieFrame" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="player-title-bar">
+      <div class="player-live-dot"></div>
+      <span class="player-live-text">Now Playing</span>
+      <div style="width:1px;height:14px;background:rgba(255,255,255,0.15);"></div>
+      <span class="player-movie-name" id="playerTitle">—</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── REQUEST OVERLAY ─── -->
+<div id="reqOverlay" class="overlay" style="display:none" onclick="handleOverlayClick(event, 'reqOverlay')">
+  <button class="closeX" style="position:fixed;top:18px;right:18px;background:var(--red);border-color:var(--red);" onclick="closeOverlay('reqOverlay')">&times;</button>
+  <div class="reqStage">
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf7YYs2uVewjNqVj-E0HkYYoRNv6q90nrRc3xD2pgD6GY2JkQ/viewform?embedded=true" style="width:100%;height:100%;border:none"></iframe>
+  </div>
+</div>
+
+<script>
+let movies = [], featIdx = 0, fTimer = null, xDown = null;
+let cdnLink = '';
+const JSON_URL = 'https://raw.githubusercontent.com/TafoHubOffical/TafoHub-DONTDMCA-Movies2222/refs/heads/main/Movies.json?v=' + Date.now();
+
+// ── NAV SCROLL ──────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── INIT ────────────────────────────────────────────────
+async function init() {
+  try {
+    const res = await fetch(JSON_URL);
+    const data = await res.json();
+    if (data[0]?.CDN) { cdnLink = data[0].CDN; movies = data.slice(1); }
+    else { movies = data; }
+    buildSwipeDots();
+    render();
+    updateFeatured();
+    startTimer();
+  } catch (e) {
+    document.getElementById('featTitle').textContent = 'Library Loading...';
+  }
+}
+
+function buildSwipeDots() {
+  const c = document.getElementById('swipeDots');
+  const count = Math.min(movies.length, 8);
+  c.innerHTML = Array.from({length: count}, (_, i) =>
+    `<div class="swipe-dot${i === 0 ? ' active' : ''}" id="dot${i}"></div>`
+  ).join('');
+}
+
+function updateDots(idx) {
+  const count = Math.min(movies.length, 8);
+  for (let i = 0; i < count; i++) {
+    const d = document.getElementById(`dot${i}`);
+    if (d) d.classList.toggle('active', i === idx % count);
+  }
+}
+
+function buildMovieUrl(title) {
+  if (!cdnLink) return '';
+  return `${cdnLink}${encodeURIComponent(title.trim())}.png`;
+}
+
+function startTimer() { fTimer = setInterval(advanceFeatured, 6000); }
+function stopTimer()  { clearInterval(fTimer); fTimer = null; }
+
+function advanceFeatured(reverse = false) {
+  if (!movies.length) return;
+  if (reverse) featIdx = (featIdx - 1 + movies.length) % movies.length;
+  updateFeatured();
+  if (!reverse) featIdx = (featIdx + 1) % movies.length;
+}
+
+function updateFeatured() {
+  if (!movies.length) return;
+  const m = movies[featIdx];
+  const bg = document.getElementById('featBg');
+  bg.style.opacity = '0';
+  setTimeout(() => {
+    bg.style.backgroundImage = `url('${buildMovieUrl(m.title)}')`;
+    bg.style.opacity = '1';
+    document.getElementById('featTitle').textContent = m.title;
+    document.getElementById('featGenre').textContent = m.genre?.split(',')[0] || '—';
+    updateDots(featIdx);
+  }, 300);
+}
+
+// ── TOUCH SWIPE ─────────────────────────────────────────
+function handleTouchStart(e) { xDown = e.touches[0].clientX; }
+function handleTouchEnd(e) {
+  if (xDown === null) return;
+  const diff = xDown - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    stopTimer();
+    const wasReverse = diff < 0;
+    if (wasReverse) featIdx = (featIdx - 2 + movies.length) % movies.length;
+    advanceFeatured(false);
+    startTimer();
+  }
+  xDown = null;
+}
+
+// ── RENDER GRID ─────────────────────────────────────────
+function render() {
+  document.getElementById('movieCount').textContent = `${movies.length} films`;
+  document.getElementById('mainContent').innerHTML = movies.map((m, i) => {
+    const img = buildMovieUrl(m.title);
+    return `
+      <div class="card" onclick="showDetails(${i})" style="animation-delay:${Math.min(i * 0.035, 0.6)}s">
+        <div class="card-img-wrap">
+          <img src="${img}" alt="${m.title}" loading="lazy">
+          <div class="card-hover-overlay">
+            <div class="card-hover-play">
+              <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="card-title">${m.title}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── DETAIL MODAL ─────────────────────────────────────────
+function showDetails(index) {
+  const m = movies[index];
+  const img = buildMovieUrl(m.title);
+
+  document.getElementById('infoBannerImg').src = img;
+  document.getElementById('infoTitle').textContent = m.title;
+  document.getElementById('infoSub').textContent = m.genre?.split(',')[0] ? `${m.genre.split(',')[0].trim()} · TaFlix` : 'TaFlix Original';
+
+  const genresHtml = (m.genre || '').split(',').map(g =>
+    `<span class="g-pill">${g.trim()}</span>`
+  ).join('');
+  document.getElementById('infoGenres').innerHTML = genresHtml;
+
+  document.getElementById('infoPlayBtn').onclick = function() {
+    closeOverlay('infoOverlay');
+    playMovie(m.fileId, m.title);
+  };
+
+  openOverlay('infoOverlay');
+}
+
+function openFeaturedDetails() {
+  if (!movies.length) return;
+  showDetails(featIdx === 0 ? movies.length - 1 : featIdx - 1);
+}
+
+// ── PLAYER ───────────────────────────────────────────────
+function playMovie(id, title) {
+  document.getElementById('movieFrame').src = `https://drive.google.com/file/d/${id}/preview`;
+  document.getElementById('playerTitle').textContent = title || '—';
+  openOverlay('playerOverlay');
+  stopTimer();
+}
+
+// ── OVERLAY CONTROL ──────────────────────────────────────
+function openOverlay(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => { el.classList.add('active'); });
+}
+
+function closeOverlay(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('active');
+  setTimeout(() => {
+    el.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    if (id === 'playerOverlay') {
+      document.getElementById('movieFrame').src = '';
+      startTimer();
+    }
+  }, 400);
+}
+
+function handleOverlayClick(e, id) {
+  if (e.target === document.getElementById(id) ||
+      e.target.classList.contains('overlay-backdrop')) {
+    closeOverlay(id);
+  }
+}
+
+// legacy shim
+function toggleOverlay(id, show) { show ? openOverlay(id) : closeOverlay(id); }
+
+init();
+</script>
+</body>
+</html>
